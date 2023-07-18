@@ -5,7 +5,7 @@ class DigitalTimer extends Component {
   state = {
     timeLimit: 25,
     minutes: 25,
-    seconds: 59,
+    seconds: 60,
     isTimerRunning: false,
     initial: true,
   }
@@ -30,7 +30,6 @@ class DigitalTimer extends Component {
     if (isTimerRunning === false && minutes > 0) {
       this.setState(prevState => ({
         isTimerRunning: !prevState.isTimerRunning,
-        initial: false,
       }))
 
       this.timerId = setInterval(this.tick, 1000)
@@ -79,12 +78,19 @@ class DigitalTimer extends Component {
   }
 
   tick = () => {
-    const {minutes, timeLimit} = this.state
+    const {minutes, timeLimit, initial} = this.state
 
     this.count += 1
     this.timeElapsedSec += 1
 
-    this.isTimerCompleted = this.timeElapsedSec === timeLimit * 60 - 1
+    this.isTimerCompleted = this.timeElapsedSec === timeLimit * 60
+
+    if (initial === true) {
+      this.setState(prevState => ({
+        minutes: prevState.minutes - 1,
+        initial: false,
+      }))
+    }
 
     if (this.isTimerCompleted) {
       this.setState({isTimerRunning: false})
